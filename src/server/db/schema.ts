@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
   varchar,
+  uuid,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -21,7 +22,7 @@ export const createTable = pgTableCreator((name) => `padel_${name}`);
 export const tournaments = createTable(
   "tournament",
   {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 255 }).notNull(),
     type: varchar("type", { length: 50 })
       .$type<"league" | "groups">()
@@ -44,7 +45,7 @@ export const teams = createTable(
   "team",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    tournamentId: integer("tournament_id")
+    tournamentId: uuid("tournament_id")
       .notNull()
       .references(() => tournaments.id),
     player1Name: varchar("player1_name", { length: 255 }).notNull(),
@@ -61,7 +62,7 @@ export const matches = createTable(
   "match",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    tournamentId: integer("tournament_id")
+    tournamentId: uuid("tournament_id")
       .notNull()
       .references(() => tournaments.id),
     team1Id: integer("team1_id")
@@ -70,9 +71,9 @@ export const matches = createTable(
     team2Id: integer("team2_id")
       .notNull()
       .references(() => teams.id),
-    scoreTeam1: integer("score_team1").notNull(),
-    scoreTeam2: integer("score_team2").notNull(),
-    stage: varchar("stage", { length: 50 }), // e.g., "league", "group", "semi-final", "final"
+    scoreTeam1: integer("score_team1"),
+    scoreTeam2: integer("score_team2"),
+    stage: varchar("stage", { length: 50 }), // e.g., "league", "group_stage", "semi-final", "final"
     matchDate: timestamp("match_date", { withTimezone: true }),
   },
   (match) => ({

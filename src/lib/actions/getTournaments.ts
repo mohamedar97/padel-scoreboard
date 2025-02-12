@@ -32,7 +32,7 @@ export const getTournaments = cache(
 );
 
 // Optional: Fetch a single tournament by ID
-export async function getTournamentById(id: number) {
+export async function getTournamentById(id: string) {
   try {
     const [tournament] = await db
       .select()

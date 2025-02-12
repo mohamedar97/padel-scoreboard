@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 // Define the input validation schema
 const addTeamsSchema = z.object({
-  tournamentId: z.number(),
+  tournamentId: z.string(),
   teams: z.array(
     z.object({
       player1Name: z.string().min(1, "Player 1 name is required"),

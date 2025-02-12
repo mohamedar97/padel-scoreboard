@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createTournament } from "@/lib/actions/createTournament";
 import { addTeamsToTournament } from "@/lib/actions/addTeamsToTournament";
+import { generateTournamentMatches } from "@/lib/actions/generateTournamentMatches";
 import { toast } from "sonner";
 import { TournamentDetailsForm } from "@/components/tournament/TournamentDetailsForm";
 import { TeamsForm } from "@/components/tournament/TeamsForm";
@@ -64,7 +65,7 @@ export default function CreateTournamentForm() {
       setCurrentTeam({
         player1Name: "",
         player2Name: "",
-        group: undefined,
+        group: currentTeam.group,
       });
     }
   };
@@ -111,19 +112,39 @@ export default function CreateTournamentForm() {
     const tournamentId = result.data.id;
 
     try {
-      const result = await addTeamsToTournament({
+      const teamsResult = await addTeamsToTournament({
         tournamentId,
         teams: formData.teams,
       });
 
-      if (result.success) {
-        toast.success("Teams added successfully!");
+      if (!teamsResult.success || !teamsResult.data) {
+        toast.error(teamsResult.error || "Failed to add teams");
+        return;
+      }
+
+      // Generate matches for the tournament
+      const matchesResult = await generateTournamentMatches({
+        tournament: {
+          id: tournamentId,
+          type: formData.type,
+          numberOfGroups: formData.numberOfGroups,
+        },
+        teams: teamsResult.data.map((team) => ({
+          id: team.id,
+          player1Name: team.player1Name,
+          player2Name: team.player2Name,
+          group: team.group || undefined,
+        })),
+      });
+
+      if (matchesResult.success) {
+        toast.success("Tournament created successfully!");
         router.push(`/tournaments/${tournamentId}`);
       } else {
-        toast.error(result.error || "Failed to add teams");
+        toast.error(matchesResult.error || "Failed to generate matches");
       }
     } catch (error) {
-      toast.error("Something went wrong while adding teams");
+      toast.error("Something went wrong while setting up the tournament");
     }
   };
 
