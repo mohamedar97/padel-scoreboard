@@ -1,7 +1,7 @@
 import { Tournament } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, MapPin, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { auth } from "@/server/authConfig";
@@ -47,18 +47,27 @@ export default async function TournamentList({
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center text-sm text-gray-500">
-                <Calendar className="mr-2 h-4 w-4" />
-                <time dateTime={new Date(tournament.createdAt).toISOString()}>
-                  {new Date(tournament.createdAt).toLocaleDateString(
-                    undefined,
-                    {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    },
-                  )}
-                </time>
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center text-sm text-gray-500">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <time dateTime={new Date(tournament.createdAt).toISOString()}>
+                    {new Date(tournament.createdAt).toLocaleDateString(
+                      undefined,
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      },
+                    )}
+                  </time>
+                </div>
+                <div className="flex items-center text-sm text-gray-500">
+                  <MapPin className="mr-2 h-4 w-4" />
+                  {tournament.location}
+                </div>
+                <Badge variant="secondary" className="w-fit">
+                  Level: {tournament.level}
+                </Badge>
               </div>
             </CardContent>
           </Card>

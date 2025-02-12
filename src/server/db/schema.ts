@@ -26,6 +26,8 @@ export const tournaments = createTable(
     type: varchar("type", { length: 50 })
       .$type<"league" | "groups">()
       .notNull(),
+    level: varchar("level", { length: 50 }).notNull(),
+    location: varchar("location", { length: 255 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -33,6 +35,7 @@ export const tournaments = createTable(
   (tournament) => ({
     nameIndex: index("tournament_name_idx").on(tournament.name),
     typeIndex: index("tournament_type_idx").on(tournament.type),
+    levelIndex: index("tournament_level_idx").on(tournament.level),
   }),
 );
 

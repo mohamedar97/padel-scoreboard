@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { db } from "@/server/db";
 import { tournaments } from "@/server/db/schema";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 // Define the input validation schema
 const createTournamentSchema = z.object({
@@ -13,6 +13,8 @@ const createTournamentSchema = z.object({
       message: "Tournament type must be either 'league' or 'groups'",
     }),
   }),
+  level: z.string().min(1, "Tournament level is required"),
+  location: z.string().min(1, "Tournament location is required"),
 });
 
 export type CreateTournamentInput = z.infer<typeof createTournamentSchema>;
@@ -28,12 +30,14 @@ export async function createTournament(input: CreateTournamentInput) {
       .values({
         name: validatedData.name,
         type: validatedData.type,
+        level: validatedData.level,
+        location: validatedData.location,
       })
       .returning();
 
     // Revalidate the tournaments page to show the new tournament
     revalidatePath("/");
-
+    revalidateTag("tournaments");
     return { success: true, data: newTournament };
   } catch (error) {
     if (error instanceof z.ZodError) {
