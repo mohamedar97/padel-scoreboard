@@ -1,37 +1,47 @@
+"use client";
+
 import { Tournament } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Plus } from "lucide-react";
+import { Calendar, MapPin, Plus, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { auth } from "@/server/authConfig";
+import { useState } from "react";
 
 interface TournamentListProps {
   tournaments: Tournament[];
 }
 
-export default async function TournamentList({
-  tournaments,
-}: TournamentListProps) {
-  const session = await auth();
+export default function TournamentList({ tournaments }: TournamentListProps) {
+  const [showAllTournaments, setShowAllTournaments] = useState(false);
+
+  // Get the latest tournament
+  const latestTournament = tournaments[0];
+  const olderTournaments = tournaments.slice(1);
+
+  const displayedTournaments = showAllTournaments
+    ? tournaments
+    : latestTournament
+      ? [latestTournament]
+      : [];
+
   return (
     <div className="w-full space-y-6">
-      {true && (
-        <div className="flex justify-end">
-          <Link href="/tournaments/create">
-            <Button
-              variant="outline"
-              className="border-black hover:bg-black hover:text-white"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Tournament
-            </Button>
-          </Link>
-        </div>
-      )}
+      <div className="flex justify-end">
+        <Link href="/tournaments/create">
+          <Button
+            variant="outline"
+            className="border-black hover:bg-black hover:text-white"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Tournament
+          </Button>
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {tournaments.map((tournament) => (
+        {displayedTournaments.map((tournament) => (
           <Card
             key={tournament.id}
             className="group relative overflow-hidden border border-black/10 transition-all hover:border-black hover:shadow-lg"
@@ -41,9 +51,13 @@ export default async function TournamentList({
                 <CardTitle className="text-xl font-bold tracking-tight">
                   {tournament.name}
                 </CardTitle>
-                <Badge variant="outline" className="border-black">
-                  {tournament.type}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  {tournament === latestTournament && (
+                    <Badge className="bg-green-500 hover:bg-green-600">
+                      Live
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -74,8 +88,22 @@ export default async function TournamentList({
         ))}
       </div>
 
-      {tournaments.length === 0 && (
+      {tournaments.length === 0 ? (
         <p className="text-center text-gray-500">No tournaments found.</p>
+      ) : (
+        olderTournaments.length > 0 &&
+        !showAllTournaments && (
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              className="border-black hover:bg-black hover:text-white"
+              onClick={() => setShowAllTournaments(true)}
+            >
+              <ChevronDown className="mr-2 h-4 w-4" />
+              Show Previous Tournaments
+            </Button>
+          </div>
+        )
       )}
     </div>
   );
