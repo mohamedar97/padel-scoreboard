@@ -26,6 +26,7 @@ export const tournaments = createTable(
     type: varchar("type", { length: 50 })
       .$type<"league" | "groups">()
       .notNull(),
+    numberOfGroups: integer("number_of_groups"),
     level: varchar("level", { length: 50 }).notNull(),
     location: varchar("location", { length: 255 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })

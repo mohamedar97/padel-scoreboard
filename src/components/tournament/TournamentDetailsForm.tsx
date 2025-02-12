@@ -14,10 +14,12 @@ interface TournamentDetailsFormProps {
   type: "league" | "groups";
   level: string;
   location: string;
+  numberOfGroups?: number;
   onNameChange: (name: string) => void;
   onTypeChange: (type: "league" | "groups") => void;
   onLevelChange: (level: string) => void;
   onLocationChange: (location: string) => void;
+  onNumberOfGroupsChange?: (numberOfGroups: number) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
@@ -26,10 +28,12 @@ export function TournamentDetailsForm({
   type,
   level,
   location,
+  numberOfGroups,
   onNameChange,
   onTypeChange,
   onLevelChange,
   onLocationChange,
+  onNumberOfGroupsChange,
   onSubmit,
 }: TournamentDetailsFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,6 +51,11 @@ export function TournamentDetailsForm({
 
     if (!location) {
       toast.error("Please select a tournament location");
+      return;
+    }
+
+    if (type === "groups" && !numberOfGroups) {
+      toast.error("Please select the number of groups");
       return;
     }
 
@@ -92,6 +101,31 @@ export function TournamentDetailsForm({
               </SelectContent>
             </Select>
           </div>
+          {type === "groups" && (
+            <div className="space-y-2">
+              <label
+                htmlFor="numberOfGroups"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Number of Groups
+              </label>
+              <Input
+                id="numberOfGroups"
+                type="text"
+                min={2}
+                max={10}
+                value={numberOfGroups || ""}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  if (!isNaN(value)) {
+                    onNumberOfGroupsChange?.(value);
+                  }
+                }}
+                placeholder="Enter number of groups"
+                className="w-full"
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <label

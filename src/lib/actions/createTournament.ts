@@ -15,6 +15,7 @@ const createTournamentSchema = z.object({
   }),
   level: z.string().min(1, "Tournament level is required"),
   location: z.string().min(1, "Tournament location is required"),
+  numberOfGroups: z.number().min(2).max(10).optional(),
 });
 
 export type CreateTournamentInput = z.infer<typeof createTournamentSchema>;
@@ -30,6 +31,7 @@ export async function createTournament(input: CreateTournamentInput) {
       .values({
         name: validatedData.name,
         type: validatedData.type,
+        numberOfGroups: validatedData.numberOfGroups,
         level: validatedData.level,
         location: validatedData.location,
       })

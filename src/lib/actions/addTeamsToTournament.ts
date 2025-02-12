@@ -12,6 +12,7 @@ const addTeamsSchema = z.object({
     z.object({
       player1Name: z.string().min(1, "Player 1 name is required"),
       player2Name: z.string().min(1, "Player 2 name is required"),
+      group: z.string().optional(),
     }),
   ),
 });
@@ -31,6 +32,7 @@ export async function addTeamsToTournament(input: AddTeamsInput) {
           tournamentId: validatedData.tournamentId,
           player1Name: team.player1Name,
           player2Name: team.player2Name,
+          group: team.group,
         })),
       )
       .returning();

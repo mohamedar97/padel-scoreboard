@@ -11,17 +11,23 @@ import { TeamsForm } from "@/components/tournament/TeamsForm";
 type Team = {
   player1Name: string;
   player2Name: string;
+  group?: string;
 };
 export default function CreateTournamentForm() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
-  const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
+  const [currentTeam, setCurrentTeam] = useState<Team>({
+    player1Name: "",
+    player2Name: "",
+    group: undefined,
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     type: "" as "league" | "groups",
     level: "",
     location: "",
+    numberOfGroups: undefined as number | undefined,
     teams: [] as Team[],
   });
 
@@ -35,19 +41,31 @@ export default function CreateTournamentForm() {
   const addTeam = () => {
     if (currentTeam.player1Name && currentTeam.player2Name) {
       if (isEditing) {
-        setFormData((prev) => {
-          const newTeams = [...prev.teams];
-          newTeams[currentTeamIndex] = currentTeam;
-          return { ...prev, teams: newTeams };
-        });
+        setFormData((prev) => ({
+          ...prev,
+          teams: prev.teams.map((team, i) =>
+            i ===
+            prev.teams.findIndex(
+              (t) =>
+                t.player1Name === currentTeam.player1Name &&
+                t.player2Name === currentTeam.player2Name,
+            )
+              ? currentTeam
+              : team,
+          ),
+        }));
         setIsEditing(false);
       } else {
         setFormData((prev) => ({
           ...prev,
-          teams: [...prev.teams],
+          teams: [...prev.teams, currentTeam],
         }));
       }
-      setCurrentTeamIndex(formData.teams.length);
+      setCurrentTeam({
+        player1Name: "",
+        player2Name: "",
+        group: undefined,
+      });
     }
   };
 
@@ -62,21 +80,18 @@ export default function CreateTournamentForm() {
     const teamToEdit = formData.teams[index];
     if (!teamToEdit) return;
 
-    setCurrentTeamIndex(index);
+    setCurrentTeam(teamToEdit);
     setIsEditing(true);
   };
 
-  const updateTeam = (field: "player1Name" | "player2Name", value: string) => {
-    setFormData((prev) => {
-      const newTeams = [...prev.teams];
-      newTeams[currentTeamIndex] = {
-        player1Name: "",
-        player2Name: "",
-        ...newTeams[currentTeamIndex],
-        [field]: value,
-      };
-      return { ...prev, teams: newTeams };
-    });
+  const updateTeam = (
+    field: "player1Name" | "player2Name" | "group",
+    value: string,
+  ) => {
+    setCurrentTeam((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -86,6 +101,7 @@ export default function CreateTournamentForm() {
       type: formData.type,
       level: formData.level,
       location: formData.location,
+      numberOfGroups: formData.numberOfGroups,
     });
 
     if (!result.success || !result.data) {
@@ -111,11 +127,6 @@ export default function CreateTournamentForm() {
     }
   };
 
-  const currentTeam = formData.teams[currentTeamIndex] || {
-    player1Name: "",
-    player2Name: "",
-  };
-
   // Auto-generate tournament name when level or location changes
   const updateTournamentName = (
     newLevel: string | undefined,
@@ -137,8 +148,17 @@ export default function CreateTournamentForm() {
           type={formData.type}
           level={formData.level}
           location={formData.location}
+          numberOfGroups={formData.numberOfGroups}
           onNameChange={(name) => setFormData((prev) => ({ ...prev, name }))}
-          onTypeChange={(type) => setFormData((prev) => ({ ...prev, type }))}
+          onTypeChange={(type) => {
+            setFormData((prev) => ({
+              ...prev,
+              type,
+              // Reset numberOfGroups when switching types
+              numberOfGroups:
+                type === "league" ? undefined : prev.numberOfGroups,
+            }));
+          }}
           onLevelChange={(level) => {
             setFormData((prev) => ({ ...prev, level }));
             updateTournamentName(level, formData.location);
@@ -147,6 +167,9 @@ export default function CreateTournamentForm() {
             setFormData((prev) => ({ ...prev, location }));
             updateTournamentName(formData.level, location);
           }}
+          onNumberOfGroupsChange={(numberOfGroups) =>
+            setFormData((prev) => ({ ...prev, numberOfGroups }))
+          }
           onSubmit={handleTournamentSubmit}
         />
       ) : (
@@ -158,6 +181,9 @@ export default function CreateTournamentForm() {
           teams={formData.teams}
           onRemoveTeam={removeTeam}
           onEditTeam={editTeam}
+          isGroupTournament={formData.type === "groups"}
+          numberOfGroups={formData.numberOfGroups}
+          isEditing={isEditing}
         />
       )}
     </div>

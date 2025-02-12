@@ -2,20 +2,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, Edit2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Team = {
   player1Name: string;
   player2Name: string;
+  group?: string;
 };
 
 interface TeamsFormProps {
   currentTeam: Team;
-  onUpdateTeam: (field: "player1Name" | "player2Name", value: string) => void;
+  onUpdateTeam: (
+    field: "player1Name" | "player2Name" | "group",
+    value: string,
+  ) => void;
   onAddTeam: () => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   teams: Team[];
   onRemoveTeam: (index: number) => void;
   onEditTeam: (index: number) => void;
+  isGroupTournament?: boolean;
+  numberOfGroups?: number;
+  isEditing: boolean;
 }
 
 export function TeamsForm({
@@ -26,6 +40,9 @@ export function TeamsForm({
   teams,
   onRemoveTeam,
   onEditTeam,
+  isGroupTournament,
+  numberOfGroups,
+  isEditing,
 }: TeamsFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,6 +62,12 @@ export function TeamsForm({
       return;
     }
 
+    // Check if any team in a group tournament is missing a group
+    if (isGroupTournament && teams.some((team) => !team.group)) {
+      toast.error("All teams must be assigned to a group");
+      return;
+    }
+
     onSubmit(e);
   };
 
@@ -53,8 +76,17 @@ export function TeamsForm({
       toast.error("Please fill in both player names");
       return;
     }
+    if (isGroupTournament && !currentTeam.group) {
+      toast.error("Please select a group for the team");
+      return;
+    }
     onAddTeam();
   };
+
+  // Generate group options based on numberOfGroups
+  const groupOptions = Array.from({ length: numberOfGroups || 0 }, (_, i) =>
+    String.fromCharCode(65 + i),
+  );
 
   return (
     <div className="space-y-6">
@@ -87,13 +119,35 @@ export function TeamsForm({
               />
             </div>
           </div>
+          {isGroupTournament && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Group
+              </label>
+              <Select
+                value={currentTeam.group}
+                onValueChange={(value) => onUpdateTeam("group", value)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select group" />
+                </SelectTrigger>
+                <SelectContent>
+                  {groupOptions.map((group) => (
+                    <SelectItem key={group} value={group}>
+                      Group {group}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <Button
             type="button"
             variant="outline"
             onClick={handleAddTeam}
             className="w-full"
           >
-            Add Another Team
+            {isEditing ? "Update Team" : "Add Team"}
           </Button>
         </div>
 
@@ -109,6 +163,11 @@ export function TeamsForm({
                   <div>
                     <p className="font-medium">
                       {team.player1Name} & {team.player2Name}
+                      {isGroupTournament && team.group && (
+                        <span className="ml-2 text-sm text-muted-foreground">
+                          (Group {team.group})
+                        </span>
+                      )}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -141,7 +200,10 @@ export function TeamsForm({
               type="submit"
               className="w-full"
               disabled={teams.some(
-                (team) => !team.player1Name || !team.player2Name,
+                (team) =>
+                  !team.player1Name ||
+                  !team.player2Name ||
+                  (isGroupTournament && !team.group),
               )}
             >
               Create Tournament
