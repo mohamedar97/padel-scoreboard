@@ -13,20 +13,7 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 }
-const users = [
-  {
-    id: "1",
-    email: "admin@example.com",
-    password: "admin123", // In a real app, this should be hashed
-    name: "Admin User",
-  },
-  {
-    id: "2",
-    email: "user@example.com",
-    password: "user123", // In a real app, this should be hashed
-    name: "Regular User",
-  },
-];
+
 // Initialize NextAuth with authentication handlers, providers, and callbacks
 /**
  * This file contains the options for NextAuth configuration.
@@ -53,14 +40,17 @@ export const {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+        const loginEmail = process.env.LOGIN_EMAIL;
+        const loginPassword = process.env.LOGIN_PASSWORD;
 
-        const user = users.find((user) => user.email === credentials.email);
-
-        if (user && user.password === credentials.password) {
+        if (
+          credentials.email === loginEmail &&
+          credentials.password === loginPassword
+        ) {
           return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
+            id: "1",
+            email: loginEmail,
+            name: "Padelers Admin",
           };
         }
 
@@ -85,13 +75,18 @@ export const {
   },
   // Custom callbacks for NextAuth
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
   },
   // Secret for NextAuth JWT tokens
   secret: process.env.AUTH_SECRET,

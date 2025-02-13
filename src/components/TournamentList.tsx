@@ -7,6 +7,7 @@ import { Calendar, MapPin, Plus, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface TournamentListProps {
   tournaments: Tournament[];
@@ -14,6 +15,8 @@ interface TournamentListProps {
 
 export default function TournamentList({ tournaments }: TournamentListProps) {
   const [showAllTournaments, setShowAllTournaments] = useState(false);
+  const { data: session } = useSession();
+  console.log(session);
 
   // Get the latest tournament
   const latestTournament = tournaments[0];
@@ -28,15 +31,17 @@ export default function TournamentList({ tournaments }: TournamentListProps) {
   return (
     <div className="w-full space-y-6">
       <div className="flex justify-end">
-        <Link href="/tournaments/create">
-          <Button
-            variant="outline"
-            className="border-black hover:bg-black hover:text-white"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Tournament
-          </Button>
-        </Link>
+        {session && (
+          <Link href="/tournaments/create">
+            <Button
+              variant="outline"
+              className="border-black hover:bg-black hover:text-white"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Tournament
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

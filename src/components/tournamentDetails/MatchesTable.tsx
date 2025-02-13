@@ -160,7 +160,7 @@ export function MatchesTable({ tournament, onMatchUpdate }: MatchesTableProps) {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      {true && (
+                      {session && (
                         <TableHead className="w-[100px]">Actions</TableHead>
                       )}
                       <TableHead>Team 1</TableHead>
@@ -171,7 +171,7 @@ export function MatchesTable({ tournament, onMatchUpdate }: MatchesTableProps) {
                   <TableBody>
                     {matches.map((match) => (
                       <TableRow key={match.id}>
-                        {true && (
+                        {session && (
                           <TableCell>
                             <Button
                               size="icon"
