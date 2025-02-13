@@ -42,9 +42,6 @@ const LoginForm = () => {
 
   return (
     <div className="mx-auto w-full max-w-2xl">
-      <h1 className="mb-12 text-center text-4xl font-bold tracking-tight text-black">
-        Welcome Back
-      </h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-3">
           <Label htmlFor="email" className="text-lg">

@@ -20,6 +20,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface TeamsTableProps {
   tournament: TournamentWithTeamsAndMatches;
@@ -38,6 +39,7 @@ export function TeamsTable({ tournament, onTeamUpdate }: TeamsTableProps) {
   } | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const { data: session } = useSession();
 
   const handleEditClick = (team: { id: number; name: string }) => {
     const [player1Name = "", player2Name = ""] = team.name.split("/");
@@ -85,7 +87,9 @@ export function TeamsTable({ tournament, onTeamUpdate }: TeamsTableProps) {
               <TableRow>
                 <TableHead>Team</TableHead>
                 {tournament.type === "groups" && <TableHead>Group</TableHead>}
-                <TableHead className="w-[100px]">Actions</TableHead>
+                {session && (
+                  <TableHead className="w-[100px]">Actions</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -100,13 +104,15 @@ export function TeamsTable({ tournament, onTeamUpdate }: TeamsTableProps) {
                     </TableCell>
                   )}
                   <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleEditClick(team)}
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
+                    {session && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEditClick(team)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
