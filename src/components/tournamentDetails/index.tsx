@@ -10,6 +10,7 @@ import { Scoreboard } from "./Scoreboard";
 import { useState } from "react";
 import { toast } from "sonner";
 import { updateMatchScore } from "@/lib/actions/updateMatchScore";
+import { updateTeamName } from "@/lib/actions/updateTeamName";
 
 interface TournamentPageProps {
   tournament: TournamentWithTeamsAndMatches;
@@ -19,6 +20,53 @@ export default function TournamentDetails({
   tournament: initialTournament,
 }: TournamentPageProps) {
   const [tournament, setTournament] = useState(initialTournament);
+
+  const handleTeamUpdate = async (
+    teamId: number,
+    player1Name: string,
+    player2Name: string,
+  ) => {
+    // Store the previous state for rollback
+    const previousTournament = tournament;
+
+    // Optimistically update the UI
+    setTournament((prev) => ({
+      ...prev,
+      teams: prev.teams.map((team) =>
+        team.id === teamId
+          ? { ...team, name: `${player1Name}/${player2Name}` }
+          : team,
+      ),
+      matches: prev.matches.map((match) => ({
+        ...match,
+        team1Name:
+          match.team1Id === teamId
+            ? `${player1Name}/${player2Name}`
+            : match.team1Name,
+        team2Name:
+          match.team2Id === teamId
+            ? `${player1Name}/${player2Name}`
+            : match.team2Name,
+      })),
+    }));
+
+    // Attempt the server update
+    const result = await updateTeamName({
+      teamId,
+      player1Name,
+      player2Name,
+    });
+
+    if (!result.success) {
+      // Revert to previous state if the update failed
+      setTournament(previousTournament);
+      toast.error(result.error || "Failed to update team name");
+      return false;
+    }
+
+    toast.success("Team updated successfully");
+    return true;
+  };
 
   const handleMatchUpdate = async (
     matchId: number,
@@ -75,7 +123,7 @@ export default function TournamentDetails({
         </TabsList>
 
         <TabsContent value="teams">
-          <TeamsTable tournament={tournament} />
+          <TeamsTable tournament={tournament} onTeamUpdate={handleTeamUpdate} />
         </TabsContent>
 
         <TabsContent value="matches">
