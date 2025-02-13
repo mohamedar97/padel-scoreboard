@@ -29,7 +29,6 @@ export function TournamentDetailsForm({
   level,
   location,
   numberOfGroups,
-  onNameChange,
   onTypeChange,
   onLevelChange,
   onLocationChange,
@@ -114,7 +113,7 @@ export function TournamentDetailsForm({
                 type="text"
                 min={2}
                 max={10}
-                value={numberOfGroups || ""}
+                value={numberOfGroups ?? ""}
                 onChange={(e) => {
                   const value = parseInt(e.target.value);
                   if (!isNaN(value)) {

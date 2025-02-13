@@ -1,4 +1,4 @@
-import { TournamentWithTeamsAndMatches } from "@/lib/types";
+import type { TournamentWithTeamsAndMatches } from "@/lib/types";
 import {
   Table,
   TableBody,
@@ -79,7 +79,7 @@ export function Scoreboard({ tournament }: ScoreboardProps) {
     tournament.type === "groups"
       ? sortedStats.reduce(
           (acc, stat) => {
-            const group = stat.group || "No Group";
+            const group = stat.group ?? "No Group";
             if (!acc[group]) acc[group] = [];
             acc[group].push(stat);
             return acc;

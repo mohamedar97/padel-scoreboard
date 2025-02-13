@@ -4,7 +4,7 @@ import { db } from "@/server/db";
 import { matches, teams, tournaments } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
-import { TournamentWithTeamsAndMatches } from "../types";
+import type { TournamentWithTeamsAndMatches } from "../types";
 
 export async function getTournamentById(id: string) {
   try {

@@ -1,6 +1,6 @@
 "use client";
 
-import { TournamentWithTeamsAndMatches } from "@/lib/types";
+import type { TournamentWithTeamsAndMatches } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Trophy, LineChart } from "lucide-react";
 import { TournamentHeader } from "./TournamentHeader";
@@ -60,7 +60,7 @@ export default function TournamentDetails({
     if (!result.success) {
       // Revert to previous state if the update failed
       setTournament(previousTournament);
-      toast.error(result.error || "Failed to update team name");
+      toast.error(result.error ?? "Failed to update team name");
       return false;
     }
 
@@ -94,7 +94,7 @@ export default function TournamentDetails({
     if (!result.success) {
       // Revert to previous state if the update failed
       setTournament(previousTournament);
-      toast.error(result.error || "Failed to update score");
+      toast.error(result.error ?? "Failed to update score");
       return false;
     }
 

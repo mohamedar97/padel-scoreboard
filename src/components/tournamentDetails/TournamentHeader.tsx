@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Users, Trophy } from "lucide-react";
-import { TournamentWithTeamsAndMatches } from "@/lib/types";
+import type { TournamentWithTeamsAndMatches } from "@/lib/types";
 
 interface TournamentHeaderProps {
   tournament: TournamentWithTeamsAndMatches;

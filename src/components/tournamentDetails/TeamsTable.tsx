@@ -1,4 +1,4 @@
-import { TournamentWithTeamsAndMatches } from "@/lib/types";
+import type { TournamentWithTeamsAndMatches } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -61,11 +61,7 @@ export function TeamsTable({ tournament, onTeamUpdate }: TeamsTableProps) {
     // Close dialog immediately for better UX
     setIsDialogOpen(false);
 
-    const success = await onTeamUpdate(
-      selectedTeam.id,
-      player1Name,
-      player2Name,
-    );
+    await onTeamUpdate(selectedTeam.id, player1Name, player2Name);
 
     setIsUpdating(false);
   };

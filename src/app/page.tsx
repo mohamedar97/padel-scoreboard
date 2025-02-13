@@ -1,7 +1,5 @@
 import TournamentList from "@/components/TournamentList";
 import { getTournaments } from "@/lib/actions/getTournaments";
-import { Tournament } from "@/lib/types";
-import { revalidateTag } from "next/cache";
 import { Suspense } from "react";
 import { Spinner } from "@/components/ui/spinner";
 

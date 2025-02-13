@@ -1,6 +1,6 @@
 "use client";
 
-import { TournamentWithTeamsAndMatches } from "@/lib/types";
+import type { TournamentWithTeamsAndMatches } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -62,7 +62,7 @@ export function MatchesTable({ tournament, onMatchUpdate }: MatchesTableProps) {
         match.team2Name,
       ]) || [],
     ),
-  ).filter(Boolean) as string[];
+  ).filter(Boolean);
 
   // Filter matches based on filters
   const filteredMatches = (tournament.matches || []).filter((match) => {
@@ -79,7 +79,7 @@ export function MatchesTable({ tournament, onMatchUpdate }: MatchesTableProps) {
   const matchesByStage = filteredMatches.reduce<
     Record<string, typeof tournament.matches>
   >((acc, match) => {
-    const stage = match.stage || "Group Stage";
+    const stage = match.stage ?? "Group Stage";
     if (!acc[stage]) {
       acc[stage] = [];
     }
@@ -113,10 +113,10 @@ export function MatchesTable({ tournament, onMatchUpdate }: MatchesTableProps) {
   const startEditing = (match: (typeof tournament.matches)[0]) => {
     setEditingMatch({
       id: match.id,
-      team1Name: match.team1Name || "",
-      team2Name: match.team2Name || "",
-      scoreTeam1: match.scoreTeam1?.toString() || "",
-      scoreTeam2: match.scoreTeam2?.toString() || "",
+      team1Name: match.team1Name ?? "",
+      team2Name: match.team2Name ?? "",
+      scoreTeam1: match.scoreTeam1?.toString() ?? "",
+      scoreTeam2: match.scoreTeam2?.toString() ?? "",
     });
   };
 

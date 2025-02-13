@@ -1,12 +1,11 @@
 "use client";
 
-import { Tournament } from "@/lib/types";
+import type { Tournament } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Plus, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { auth } from "@/server/authConfig";
 import { useState } from "react";
 
 interface TournamentListProps {

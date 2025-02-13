@@ -124,7 +124,7 @@ export default function CreateTournamentForm() {
       });
 
       if (!teamsResult.success || !teamsResult.data) {
-        toast.error(teamsResult.error || "Failed to add teams");
+        toast.error(teamsResult.error ?? "Failed to add teams");
         return;
       }
       setLoading("Generating Matches");
@@ -139,7 +139,7 @@ export default function CreateTournamentForm() {
           id: team.id,
           player1Name: team.player1Name,
           player2Name: team.player2Name,
-          group: team.group || undefined,
+          group: team.group ?? undefined,
         })),
       });
       setLoading(undefined);
@@ -147,7 +147,7 @@ export default function CreateTournamentForm() {
         toast.success("Tournament created successfully!");
         router.push(`/tournaments/${tournamentId}`);
       } else {
-        toast.error(matchesResult.error || "Failed to generate matches");
+        toast.error(matchesResult.error ?? "Failed to generate matches");
       }
     } catch (error) {
       toast.error("Something went wrong while setting up the tournament");

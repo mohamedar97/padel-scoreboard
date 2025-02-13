@@ -3,7 +3,7 @@
 import { db } from "@/server/db";
 import { tournaments } from "@/server/db/schema";
 import { desc } from "drizzle-orm";
-import { Tournament } from "../types";
+import type { Tournament } from "../types";
 import { unstable_cache as cache } from "next/cache";
 
 export const getTournaments = cache(

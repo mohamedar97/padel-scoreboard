@@ -8,14 +8,14 @@ export interface Tournament {
   createdAt: Date;
 }
 
-interface Team {
+export interface Team {
   id: number;
   player1Name: string;
   player2Name: string;
   group: string | null;
 }
 
-interface Match {
+export interface Match {
   id: number;
   team1Id: number;
   team2Id: number;

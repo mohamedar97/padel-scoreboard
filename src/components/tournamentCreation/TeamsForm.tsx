@@ -86,7 +86,7 @@ export function TeamsForm({
   };
 
   // Generate group options based on numberOfGroups
-  const groupOptions = Array.from({ length: numberOfGroups || 0 }, (_, i) =>
+  const groupOptions = Array.from({ length: numberOfGroups ?? 0 }, (_, i) =>
     String.fromCharCode(65 + i),
   );
 
