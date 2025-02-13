@@ -24,6 +24,15 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface MatchesTableProps {
   tournament: TournamentWithTeamsAndMatches;
@@ -31,6 +40,8 @@ interface MatchesTableProps {
 
 export function MatchesTable({ tournament }: MatchesTableProps) {
   const { data: session } = useSession();
+  const [showIncompleteOnly, setShowIncompleteOnly] = useState(true);
+  const [selectedTeam, setSelectedTeam] = useState<string>("all");
   const [editingMatch, setEditingMatch] = useState<{
     id: number;
     team1Name: string;
@@ -39,7 +50,29 @@ export function MatchesTable({ tournament }: MatchesTableProps) {
     scoreTeam2: string;
   } | null>(null);
 
-  const matchesByStage = (tournament.matches || []).reduce<
+  // Get unique teams from matches
+  const uniqueTeams = Array.from(
+    new Set(
+      tournament.matches?.flatMap((match) => [
+        match.team1Name,
+        match.team2Name,
+      ]) || [],
+    ),
+  ).filter(Boolean) as string[];
+
+  // Filter matches based on filters
+  const filteredMatches = (tournament.matches || []).filter((match) => {
+    if (showIncompleteOnly && match.scoreTeam1 !== null) return false;
+    if (
+      selectedTeam !== "all" &&
+      match.team1Name !== selectedTeam &&
+      match.team2Name !== selectedTeam
+    )
+      return false;
+    return true;
+  });
+
+  const matchesByStage = filteredMatches.reduce<
     Record<string, typeof tournament.matches>
   >((acc, match) => {
     const stage = match.stage || "Group Stage";
@@ -95,6 +128,33 @@ export function MatchesTable({ tournament }: MatchesTableProps) {
       <Card>
         <CardHeader>
           <CardTitle>Matches Schedule</CardTitle>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="incomplete-matches"
+                checked={showIncompleteOnly}
+                onCheckedChange={setShowIncompleteOnly}
+              />
+              <Label htmlFor="incomplete-matches">
+                Show incomplete matches only
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Filter by team" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All teams</SelectItem>
+                  {uniqueTeams.map((team) => (
+                    <SelectItem key={team} value={team}>
+                      {team}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="p-2">
           <div className="space-y-6">
@@ -155,8 +215,8 @@ export function MatchesTable({ tournament }: MatchesTableProps) {
           </DialogHeader>
           {editingMatch && (
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-3 items-center gap-4">
-                <div className="text-right font-medium">
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-[200px] truncate text-start font-medium">
                   {editingMatch.team1Name}
                 </div>
                 <Input
@@ -168,14 +228,14 @@ export function MatchesTable({ tournament }: MatchesTableProps) {
                       scoreTeam1: e.target.value,
                     })
                   }
-                  className="col-span-1 text-center"
+                  className="max-w-[100px] text-center"
                   min={0}
                   max={6}
                 />
                 <div />
               </div>
-              <div className="grid grid-cols-3 items-center gap-4">
-                <div className="text-right font-medium">
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-[200px] truncate text-start font-medium">
                   {editingMatch.team2Name}
                 </div>
                 <Input
@@ -187,7 +247,7 @@ export function MatchesTable({ tournament }: MatchesTableProps) {
                       scoreTeam2: e.target.value,
                     })
                   }
-                  className="col-span-1 text-center"
+                  className="col-span-1 max-w-[100px] text-center"
                   min={0}
                   max={6}
                 />
