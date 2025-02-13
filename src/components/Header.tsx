@@ -22,10 +22,7 @@ const Header = () => {
         </div>
 
         {status === "authenticated" && (
-          <Button
-            variant="ghost"
-            onClick={() => signOut({ callbackUrl: "/login" })}
-          >
+          <Button variant="ghost" onClick={() => signOut()}>
             Logout
           </Button>
         )}

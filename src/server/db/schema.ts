@@ -50,9 +50,10 @@ export const teams = createTable(
   "team",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    tournamentId: varchar("tournament_id", { length: 14 })
-      .notNull()
-      .references(() => tournaments.id),
+    tournamentId: varchar("tournament_id", { length: 14 }).references(
+      () => tournaments.id,
+      { onDelete: "set null" },
+    ),
     player1Name: varchar("player1_name", { length: 255 }).notNull(),
     player2Name: varchar("player2_name", { length: 255 }).notNull(),
     group: varchar("group", { length: 50 }), // optional, used only for groups tournaments
@@ -67,9 +68,10 @@ export const matches = createTable(
   "match",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    tournamentId: varchar("tournament_id", { length: 14 })
-      .notNull()
-      .references(() => tournaments.id),
+    tournamentId: varchar("tournament_id", { length: 14 }).references(
+      () => tournaments.id,
+      { onDelete: "set null" },
+    ),
     team1Id: integer("team1_id")
       .notNull()
       .references(() => teams.id),
