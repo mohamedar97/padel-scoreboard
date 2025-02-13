@@ -12,7 +12,7 @@ export default async function TournamentPageWrapper({
     return <div>No tournament ID provided</div>;
   }
   return (
-    <div className="mx-auto px-3 py-8">
+    <div className="mx-auto max-w-7xl px-3 py-8">
       <Suspense fallback={<div>Loading tournament...</div>}>
         <TournamentWrapper id={id} />
       </Suspense>
