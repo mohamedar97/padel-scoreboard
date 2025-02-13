@@ -16,7 +16,6 @@ interface TournamentListProps {
 export default function TournamentList({ tournaments }: TournamentListProps) {
   const [showAllTournaments, setShowAllTournaments] = useState(false);
   const { data: session } = useSession();
-  console.log(session);
 
   // Get the latest tournament
   const latestTournament = tournaments[0];

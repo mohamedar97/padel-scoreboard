@@ -37,8 +37,6 @@ export async function createTournament(input: CreateTournamentInput) {
       })
       .returning();
 
-    console.log("newTournament", newTournament);
-
     // Revalidate the tournaments page to show the new tournament
     revalidatePath("/");
     revalidateTag("tournaments");

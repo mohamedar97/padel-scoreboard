@@ -1,9 +1,9 @@
+import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
-
+import { Providers } from "@/components/providers";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -15,13 +15,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <SessionProvider>
-      <html lang="en" className={`${GeistSans.variable}`}>
-        <body>
+    <html lang="en" className={`${GeistSans.variable}`}>
+      <body>
+        <Providers>
+          <Header />
           {children}
           <Toaster />
-        </body>
-      </html>
-    </SessionProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }
