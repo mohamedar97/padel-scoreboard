@@ -6,8 +6,8 @@ import { createTournament } from "@/lib/actions/createTournament";
 import { addTeamsToTournament } from "@/lib/actions/addTeamsToTournament";
 import { generateTournamentMatches } from "@/lib/actions/generateTournamentMatches";
 import { toast } from "sonner";
-import { TournamentDetailsForm } from "@/components/tournament/TournamentDetailsForm";
-import { TeamsForm } from "@/components/tournament/TeamsForm";
+import { TournamentDetailsForm } from "@/components/tournamentCreation/TournamentDetailsForm";
+import { TeamsForm } from "@/components/tournamentCreation/TeamsForm";
 
 type Team = {
   player1Name: string;

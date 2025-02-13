@@ -42,49 +42,50 @@ export default function TournamentList({ tournaments }: TournamentListProps) {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {displayedTournaments.map((tournament) => (
-          <Card
-            key={tournament.id}
-            className="group relative overflow-hidden border border-black/10 transition-all hover:border-black hover:shadow-lg"
-          >
-            <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                <CardTitle className="text-xl font-bold tracking-tight">
-                  {tournament.name}
-                </CardTitle>
-                <div className="flex items-center gap-2">
-                  {tournament === latestTournament && (
-                    <Badge className="bg-green-500 hover:bg-green-600">
-                      Live
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col space-y-2">
-                <div className="flex items-center text-sm text-gray-500">
-                  <Calendar className="mr-2 h-4 w-4" />
-                  <time dateTime={new Date(tournament.createdAt).toISOString()}>
-                    {new Date(tournament.createdAt).toLocaleDateString(
-                      undefined,
-                      {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      },
+          <Link href={`/tournaments/${tournament.id}`} key={tournament.id}>
+            <Card className="group relative overflow-hidden border border-black/10 transition-all hover:border-black hover:shadow-lg">
+              <CardHeader className="pb-4">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-xl font-bold tracking-tight">
+                    {tournament.name}
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    {tournament === latestTournament && (
+                      <Badge className="bg-green-500 hover:bg-green-600">
+                        Live
+                      </Badge>
                     )}
-                  </time>
+                  </div>
                 </div>
-                <div className="flex items-center text-sm text-gray-500">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  {tournament.location}
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center text-sm text-gray-500">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <time
+                      dateTime={new Date(tournament.createdAt).toISOString()}
+                    >
+                      {new Date(tournament.createdAt).toLocaleDateString(
+                        undefined,
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        },
+                      )}
+                    </time>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-500">
+                    <MapPin className="mr-2 h-4 w-4" />
+                    {tournament.location}
+                  </div>
+                  <Badge variant="secondary" className="w-fit">
+                    Level: {tournament.level}
+                  </Badge>
                 </div>
-                <Badge variant="secondary" className="w-fit">
-                  Level: {tournament.level}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 

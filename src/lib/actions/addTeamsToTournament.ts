@@ -22,6 +22,7 @@ export type AddTeamsInput = z.infer<typeof addTeamsSchema>;
 export async function addTeamsToTournament(input: AddTeamsInput) {
   try {
     // Validate the input
+    console.log("input", input);
     const validatedData = addTeamsSchema.parse(input);
 
     // Insert all teams
