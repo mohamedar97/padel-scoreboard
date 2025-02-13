@@ -5,8 +5,14 @@ import {
   pgTableCreator,
   timestamp,
   varchar,
-  uuid,
 } from "drizzle-orm/pg-core";
+import { customAlphabet } from "nanoid";
+
+// Create a custom nanoid function that generates shorter IDs (14 characters) using only alphanumeric chars
+const generateId = customAlphabet(
+  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  14,
+);
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -19,7 +25,9 @@ export const createTable = pgTableCreator((name) => `padel_${name}`);
 export const tournaments = createTable(
   "tournament",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: varchar("id", { length: 14 })
+      .primaryKey()
+      .$defaultFn(() => generateId()),
     name: varchar("name", { length: 255 }).notNull(),
     type: varchar("type", { length: 50 })
       .$type<"league" | "groups">()
@@ -42,7 +50,7 @@ export const teams = createTable(
   "team",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    tournamentId: uuid("tournament_id")
+    tournamentId: varchar("tournament_id", { length: 14 })
       .notNull()
       .references(() => tournaments.id),
     player1Name: varchar("player1_name", { length: 255 }).notNull(),
@@ -59,7 +67,7 @@ export const matches = createTable(
   "match",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    tournamentId: uuid("tournament_id")
+    tournamentId: varchar("tournament_id", { length: 14 })
       .notNull()
       .references(() => tournaments.id),
     team1Id: integer("team1_id")
