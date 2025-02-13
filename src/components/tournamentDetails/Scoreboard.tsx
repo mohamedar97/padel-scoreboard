@@ -39,7 +39,7 @@ export function Scoreboard({ tournament }: ScoreboardProps) {
     };
 
     // Calculate statistics from matches
-    tournament.matches.forEach((match) => {
+    (tournament.matches || []).forEach((match) => {
       // Skip matches that haven't been played yet
       if (match.scoreTeam1 === null || match.scoreTeam2 === null) return;
 

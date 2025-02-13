@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { updateMatchScore } from "@/lib/actions/updateMatchScore";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { Calculator } from "lucide-react";
@@ -36,9 +35,14 @@ import { Label } from "@/components/ui/label";
 
 interface MatchesTableProps {
   tournament: TournamentWithTeamsAndMatches;
+  onMatchUpdate: (
+    matchId: number,
+    scoreTeam1: number,
+    scoreTeam2: number,
+  ) => Promise<boolean>;
 }
 
-export function MatchesTable({ tournament }: MatchesTableProps) {
+export function MatchesTable({ tournament, onMatchUpdate }: MatchesTableProps) {
   const { data: session } = useSession();
   const [showIncompleteOnly, setShowIncompleteOnly] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState<string>("all");
@@ -99,18 +103,11 @@ export function MatchesTable({ tournament }: MatchesTableProps) {
       return;
     }
 
-    const result = await updateMatchScore({
-      matchId: editingMatch.id,
-      scoreTeam1,
-      scoreTeam2,
-    });
+    // Close dialog immediately
+    setEditingMatch(null);
 
-    if (result.success) {
-      toast.success("Score updated successfully");
-      setEditingMatch(null);
-    } else {
-      toast.error(result.error || "Failed to update score");
-    }
+    // Update the score
+    await onMatchUpdate(editingMatch.id, scoreTeam1, scoreTeam2);
   };
 
   const startEditing = (match: (typeof tournament.matches)[0]) => {
