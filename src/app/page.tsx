@@ -3,6 +3,7 @@ import { getTournaments } from "@/lib/actions/getTournaments";
 import { Tournament } from "@/lib/types";
 import { revalidateTag } from "next/cache";
 import { Suspense } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default async function TournamentsPage() {
   return (
@@ -10,7 +11,13 @@ export default async function TournamentsPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Padel Tournaments</h1>
       </div>
-      <Suspense fallback={<div>Loading tournaments...</div>}>
+      <Suspense
+        fallback={
+          <div className="flex min-h-[200px] items-center justify-center">
+            <Spinner size="lg" />
+          </div>
+        }
+      >
         <TournamentListWrapper />
       </Suspense>
     </div>

@@ -31,6 +31,7 @@ export default function CreateTournamentForm() {
     numberOfGroups: undefined as number | undefined,
     teams: [] as Team[],
   });
+  const [loading, setLoading] = useState<string | undefined>(undefined);
 
   const handleTournamentSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -97,6 +98,11 @@ export default function CreateTournamentForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (formData.teams.length < 2) {
+      toast.error("Please add at least two teams");
+      return;
+    }
+    setLoading("Creating Tournament");
     const result = await createTournament({
       name: formData.name,
       type: formData.type,
@@ -110,7 +116,7 @@ export default function CreateTournamentForm() {
       return;
     }
     const tournamentId = result.data.id;
-
+    setLoading("Creating Teams");
     try {
       const teamsResult = await addTeamsToTournament({
         tournamentId,
@@ -121,7 +127,7 @@ export default function CreateTournamentForm() {
         toast.error(teamsResult.error || "Failed to add teams");
         return;
       }
-
+      setLoading("Generating Matches");
       // Generate matches for the tournament
       const matchesResult = await generateTournamentMatches({
         tournament: {
@@ -136,7 +142,7 @@ export default function CreateTournamentForm() {
           group: team.group || undefined,
         })),
       });
-
+      setLoading(undefined);
       if (matchesResult.success) {
         toast.success("Tournament created successfully!");
         router.push(`/tournaments/${tournamentId}`);
@@ -205,6 +211,7 @@ export default function CreateTournamentForm() {
           isGroupTournament={formData.type === "groups"}
           numberOfGroups={formData.numberOfGroups}
           isEditing={isEditing}
+          loading={loading}
         />
       )}
     </div>

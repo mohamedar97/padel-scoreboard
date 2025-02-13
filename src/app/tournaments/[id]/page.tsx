@@ -1,6 +1,7 @@
 import TournamentDetails from "@/components/tournamentDetails";
 import { getTournamentById } from "@/lib/actions/getTournamentById";
 import { Suspense } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default async function TournamentPageWrapper({
   params,
@@ -13,7 +14,13 @@ export default async function TournamentPageWrapper({
   }
   return (
     <div className="mx-auto max-w-7xl px-3 py-8">
-      <Suspense fallback={<div>Loading tournament...</div>}>
+      <Suspense
+        fallback={
+          <div className="flex min-h-[200px] items-center justify-center">
+            <Spinner size="lg" />
+          </div>
+        }
+      >
         <TournamentWrapper id={id} />
       </Suspense>
     </div>

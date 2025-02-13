@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Edit2 } from "lucide-react";
+import { Trash2, Edit2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Select,
@@ -30,6 +30,7 @@ interface TeamsFormProps {
   isGroupTournament?: boolean;
   numberOfGroups?: number;
   isEditing: boolean;
+  loading: string | undefined;
 }
 
 export function TeamsForm({
@@ -43,6 +44,7 @@ export function TeamsForm({
   isGroupTournament,
   numberOfGroups,
   isEditing,
+  loading,
 }: TeamsFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -199,14 +201,22 @@ export function TeamsForm({
             <Button
               type="submit"
               className="w-full"
-              disabled={teams.some(
-                (team) =>
-                  !team.player1Name ||
-                  !team.player2Name ||
-                  (isGroupTournament && !team.group),
-              )}
+              disabled={
+                teams.some(
+                  (team) =>
+                    !team.player1Name ||
+                    !team.player2Name ||
+                    (isGroupTournament && !team.group),
+                ) || !!loading
+              }
             >
-              Create Tournament
+              {loading ? (
+                <>
+                  {loading} <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                </>
+              ) : (
+                "Create Tournament"
+              )}
             </Button>
           </div>
         </div>
