@@ -1,29 +1,92 @@
-# Create T3 App
+# Padel Tournament Manager
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A modern web application for managing padel tennis tournaments, built with the T3 Stack.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **Tournament Creation**
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+  - Create league or group-based tournaments
+  - Specify tournament level (Beginners, Level D, Level C, Mixed)
+  - Choose tournament location
+  - Configure number of groups for group-based tournaments
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Team Management**
 
-## Learn More
+  - Add teams with two players each
+  - Assign teams to groups in group tournaments
+  - Edit team names and group assignments
+  - View team statistics and standings
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- **Match Management**
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+  - Automatic match generation based on tournament type
+  - Record match scores
+  - Track match progress
+  - Filter matches by completion status and teams
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- **Tournament Dashboard**
 
-## How do I deploy this?
+  - Real-time scoreboard with team rankings
+  - Points calculation (3 points for win, 1 for draw)
+  - Set difference tracking
+  - Group-wise standings for group tournaments
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+- **User Authentication**
+  - Secure login system
+  - Protected tournament management features
+
+## Tech Stack
+
+This project is built using the [T3 Stack](https://create.t3.gg/), which includes:
+
+- [Next.js](https://nextjs.org) - React framework for web applications
+- [NextAuth.js](https://next-auth.js.org) - Authentication for Next.js
+- [Prisma](https://prisma.io) - Type-safe database ORM
+- [Drizzle](https://orm.drizzle.team) - TypeScript ORM
+- [Tailwind CSS](https://tailwindcss.com) - Utility-first CSS framework
+- [tRPC](https://trpc.io) - End-to-end typesafe APIs
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up your environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+4. Set up the database:
+   ```bash
+   npm run db:push
+   ```
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Development
+
+- `npm run dev` - Start the development server
+- `npm run build` - Build the application for production
+- `npm run start` - Start the production server
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+
+## Deployment
+
+The application can be deployed on:
+
+- [Vercel](https://create.t3.gg/en/deployment/vercel)
+- [Netlify](https://create.t3.gg/en/deployment/netlify)
+- [Docker](https://create.t3.gg/en/deployment/docker)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
