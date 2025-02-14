@@ -164,7 +164,7 @@ export function TeamsForm({
                 >
                   <div>
                     <p className="font-medium">
-                      {team.player1Name} & {team.player2Name}
+                      {team.player1Name} / {team.player2Name}
                       {isGroupTournament && team.group && (
                         <span className="ml-2 text-sm text-muted-foreground">
                           (Group {team.group})

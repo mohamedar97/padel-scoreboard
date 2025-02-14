@@ -93,7 +93,7 @@ export function Scoreboard({ tournament }: ScoreboardProps) {
       {Object.entries(groupedStats).map(([group, stats]) => (
         <Card key={group}>
           <CardHeader>
-            <CardTitle>{group}</CardTitle>
+            <CardTitle>Group {group}</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
